@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Filmes Populares</title>
+</head>
+<body>
+    <nav class="navbar">
+        <a class="logo" href="index.html">FilmAPI</a>
+        <div class="menu">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+    </nav>
+
+    <h2 style="margin-left: 20px;">Filmes Populares</h2>
+
+    <div class="main-content">
+        <div class="sidebar-container">
+            <aside class="sidebar">
+                <h2>Ordenar</h2>
+                <div class="filter-group">
+                    <label for="sort-by">Escolha uma opção:</label>
+                    <select id="sort-by">
+                        <option value="release-asc">Data de lançamento (Ascendente)</option>
+                        <option value="release-desc">Data de lançamento (Descendente)</option>
+                        <option value="rating-asc">Classificação Ascendente</option>
+                        <option value="rating-desc">Classificação Descendente</option>
+                        <option value="title-asc">Título (A - Z)</option>
+                        <option value="title-desc">Título (Z - A)</option>
+                    </select>
+                </div>
+            </aside>
+            <div class="filter-group">
+                <button id="apply-filters-btn" class="apply-filters-button">Pesquisar</button>
+            </div>
+        </div>
+        <div id="movies-container"></div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 Filmes e Séries. Todos os direitos reservados.
+            <a href="#">Política de Privacidade</a> |
+            <a href="#">Termos de Utilização</a>
+        </p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
