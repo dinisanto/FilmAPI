@@ -57,7 +57,7 @@ async function getTmdbTrailer(movieId) {
     }
 }
 
-// Rota para buscar filme por título
+// Rota para buscar filmes por título
 app.get('/get_film/:title', async (req, res) => {
     const { title } = req.params;
     const { exact } = req.query;
@@ -92,7 +92,7 @@ app.get('/get_film/:title', async (req, res) => {
 
         const enrichedMovies = await Promise.all(
             movies.map(async (movie) => {
-                const tmdbId = movie.id;
+                const id_filme = movie.id; // Alteração para id_filme
 
                 const omdbUrl = `http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&t=${encodeURIComponent(movie.title)}`;
                 const omdbResponse = await axios.get(omdbUrl);
@@ -105,19 +105,19 @@ app.get('/get_film/:title', async (req, res) => {
                     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
                     : (omdbData.Response !== "False" && omdbData.Poster !== "N/A") ? omdbData.Poster : "Imagem não encontrada";
 
-                // Adicionar URL do background
                 const background = movie.backdrop_path
                     ? `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`
                     : "Background não encontrado";
 
-                const trailerUrl = await getTmdbTrailer(tmdbId);
+                const trailerUrl = await getTmdbTrailer(id_filme);
 
                 return {
+                    id_filme, // Adicionando id_filme
                     title: movie.title,
                     plot: movie.overview || "Sinopse não disponível.",
                     trailer: trailerUrl,
                     image: poster,
-                    background: background, 
+                    background: background,
                     release_date: release_date,
                     vote_average: vote_average,
                 };
@@ -132,7 +132,7 @@ app.get('/get_film/:title', async (req, res) => {
 
         const { error } = await supabase
             .from('filmes')
-            .insert(dataToInsert);
+            .upsert(dataToInsert, { onConflict: 'id_filme' }); // Usando id_filme como chave única
 
         if (error) {
             console.error('Erro ao salvar no Supabase:', error.message);
@@ -149,15 +149,14 @@ app.get('/get_film/:title', async (req, res) => {
     }
 });
 
-// Rota para buscar filme por ID
-app.get('/get_film_by_id/:id', async (req, res) => {
-    const { id } = req.params;
+// Rota para buscar filmes por ID
+app.get('/get_film_by_id/:id_filme', async (req, res) => {
+    const { id_filme } = req.params;
 
     try {
-        // A URL para pegar as informações do filme usando o ID
-        const tmdbUrl = `https://api.themoviedb.org/3/movie/${id}`;
+        const tmdbDetailsUrl = `https://api.themoviedb.org/3/movie/${id_filme}`;
 
-        const tmdbResponse = await axios.get(tmdbUrl, {
+        const tmdbResponse = await axios.get(tmdbDetailsUrl, {
             params: {
                 api_key: TMDB_ACCESS_TOKEN,
                 language: "pt-BR",
@@ -168,10 +167,6 @@ app.get('/get_film_by_id/:id', async (req, res) => {
         });
 
         const movie = tmdbResponse.data;
-
-        if (!movie) {
-            return res.status(404).json({ error: "Filme não encontrado na TMDb." });
-        }
 
         const omdbUrl = `http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&t=${encodeURIComponent(movie.title)}`;
         const omdbResponse = await axios.get(omdbUrl);
@@ -188,9 +183,10 @@ app.get('/get_film_by_id/:id', async (req, res) => {
             ? `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`
             : "Background não encontrado";
 
-        const trailerUrl = await getTmdbTrailer(id);
+        const trailerUrl = await getTmdbTrailer(id_filme);
 
         const enrichedMovie = {
+            id_filme, // Adicionando id_filme
             title: movie.title,
             plot: movie.overview || "Sinopse não disponível.",
             trailer: trailerUrl,
@@ -200,28 +196,19 @@ app.get('/get_film_by_id/:id', async (req, res) => {
             vote_average: vote_average,
         };
 
-        const clientIp = req.clientIp;
-        const dataToInsert = {
-            ...enrichedMovie,
-            client_ip: clientIp,
-        };
-
         const { error } = await supabase
             .from('filmes')
-            .insert([dataToInsert]);
+            .upsert({ ...enrichedMovie, client_ip: req.clientIp }, { onConflict: 'id_filme' }); // Usando id_filme como chave única
 
         if (error) {
             console.error('Erro ao salvar no Supabase:', error.message);
             return res.status(500).json({ error: "Erro ao salvar dados no Supabase" });
         }
 
-        return res.json({
-            movie: enrichedMovie,
-            message: `Filme encontrado.`,
-        });
+        return res.json(enrichedMovie);
     } catch (error) {
-        console.error("Erro ao buscar dados:", error.message);
-        return res.status(500).json({ error: "Erro ao buscar dados das APIs." });
+        console.error("Erro ao buscar dados por ID:", error.message);
+        return res.status(500).json({ error: "Erro ao buscar dados do filme por ID." });
     }
 });
 
