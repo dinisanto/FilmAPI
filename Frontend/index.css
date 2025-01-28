@@ -15,7 +15,7 @@ html, body {
     color: #ffffff;
     line-height: 1.6;
     background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
-    url("Frontend/images/background.jpg") no-repeat center top;
+    url("images/background.jpg") no-repeat center top;
     background-size: cover;
 }
 
