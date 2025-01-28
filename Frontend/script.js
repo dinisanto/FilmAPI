@@ -152,10 +152,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             movieElement.className = "movie";
 
             const voteAverage = parseFloat(movie.vote_average) || 0;
+            const votePercentage = movie.vote_average 
+                ? Math.round(movie.vote_average * 10) + "%" 
+                : "N/A";
+
             const voteColor =
                 voteAverage <= 3
                     ? "#ff0000"
-                    : voteAverage <= 6
+                    : voteAverage <= 7
                     ? "#ffcc00"
                     : "#21d07a";
 
@@ -167,7 +171,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                       #204529 ${voteAverage * 10}% 100%
                     );">
                         <div class="circle">
-                            <span class="progress-text">${voteAverage.toFixed(1)}</span>
+                            <span class="progress-text">${votePercentage}</span>
                         </div>
                     </div>
                 </div>
