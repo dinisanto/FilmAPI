@@ -1,62 +1,91 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resultados da Pesquisa</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Filmes Populares</title>
 </head>
 <body>
-    <h1>Resultados da Pesquisa</h1>
-    <div id="movies-container"></div>
+    <nav class="navbar">
+        <a class="logo" href="index.html">Filmes e Séries</a>
+        <div class="menu">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+    </nav>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", async () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const title = urlParams.get("title");
+    <h2 style="margin-left: 20px;">Filmes Populares</h2>
 
-            if (!title) {
-                alert("Nenhum título de filme fornecido!");
-                return;
-            }
+    <div class="main-content">
+        <div class="sidebar-container">
+            <aside class="sidebar">
+                <h2>Ordenar</h2>
+                <div class="filter-group">
+                    <label for="sort-by">Escolha uma opção:</label>
+                    <select id="sort-by">
+                        <option value="release-asc">Data de lançamento (Ascendente)</option>
+                        <option value="release-desc">Data de lançamento (Descendente)</option>
+                        <option value="rating-asc">Classificação Ascendente</option>
+                        <option value="rating-desc">Classificação Descendente</option>
+                        <option value="title-asc">Título (A - Z)</option>
+                        <option value="title-desc">Título (Z - A)</option>
+                    </select>
+                </div>
+            </aside>
 
-            try {
-                const response = await fetch(`http://localhost:5500/get_film/${title}`);
-                const data = await response.json();
+            <!-- <aside class="sidebar">
+                <h2>Filtros</h2>
 
-                if (response.ok) {
-                    const moviesContainer = document.getElementById("movies-container");
+                <div class="filter-group">
+                    <h3>Datas de estreia</h3>
+                    <label>De: <input type="date" id="start-date"></label>
+                    <label>Até: <input type="date" id="end-date"></label>
+                </div>
 
-                    data.movies.forEach(movie => {
-                        const movieElement = document.createElement("div");
-                        movieElement.className = "movie";
+                <div class="filter-group">
+                    <h3>Gêneros</h3>
+                    <button class="genre-button">Ação</button>
+                    <button class="genre-button">Aventura</button>
+                    <button class="genre-button">Animação</button>
+                    <button class="genre-button">Romance</button>
+                    <button class="genre-button">Comédia</button>
+                    <button class="genre-button">Drama</button>
+                    <button class="genre-button">Terror</button>
+                    <button class="genre-button">Mistério</button>
+                    <button class="genre-button">Crime</button>
+                    <button class="genre-button">Musical</button>
+                    <button class="genre-button">Ficção Científica</button>
+                </div>
 
-                        const posterImage = movie.image !== "Imagem não encontrada" && movie.image !== "N/A" 
-                            ? movie.image 
-                            : "https://via.placeholder.com/200";
+                <div class="filter-group">
+                    <h3>Duração</h3>
+                    <label>De: <input type="number" id="min-duration" placeholder="Minutos" min="1"></label>
+                    <label>Até: <input type="number" id="max-duration" placeholder="Minutos" min="1"></label>
+                </div>                 
 
-                        movieElement.innerHTML = `
-                            <img src="${posterImage}" alt="${movie.title}" />
-                            <h3>${movie.title}</h3>
-                            <p><strong>Nota:</strong> ${movie.vote_average || "N/A"}</p>
-                        `;
-
-                        // Certifique-se de passar o 'id' correto aqui.
-                        movieElement.addEventListener("click", () => {
-                            // Altere o parâmetro para passar o ID correto
-                            window.location.href = `details.html?id=${movie.title}`; // Usar o 'title' para identificar
-                        });
-
-                        moviesContainer.appendChild(movieElement);
-                    });
-                } else {
-                    alert(data.error || "Erro ao buscar os filmes.");
-                }
-            } catch (error) {
-                console.error("Erro no frontend:", error);
-                alert("Erro ao buscar os filmes. Tente novamente mais tarde.");
-            }
-        });
-    </script>
+                <div class="filter-group">
+                    <h3>Certificação Etária</h3>
+                    <button class="age-rating-button" value="6">6 anos</button>
+                    <button class="age-rating-button" value="12">12 anos</button>
+                    <button class="age-rating-button" value="14">14 anos</button>
+                    <button class="age-rating-button" value="16">16 anos</button>
+                    <button class="age-rating-button" value="18">18 anos</button>
+                </div> -->
+            </aside>
+            <div class="filter-group">
+                <button id="apply-filters-btn" class="apply-filters-button">Pesquisar</button>
+            </div>
+        </div>
+        <div id="movies-container"></div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 Filmes e Séries. Todos os direitos reservados.
+            <a href="#">Política de Privacidade</a> |
+            <a href="#">Termos de Utilização</a>
+        </p>
+    </footer>
+    <script src="script.js"></script>
 </body>
 </html>
