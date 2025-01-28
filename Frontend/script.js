@@ -157,7 +157,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 : "N/A";
 
             const voteColor =
-                voteAverage <= 3
+                voteAverage <= 3.9
                     ? "#ff0000"
                     : voteAverage <= 7
                     ? "#ffcc00"
