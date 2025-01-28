@@ -190,7 +190,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             movieElement.addEventListener("click", () => {
                 const movieTitle = encodeURIComponent(movie.title);
-                window.location.href = `/FilmAPI/Frontend/details.html?title=${movieTitle}`;
+                window.location.href = `/Frontend/details.html?title=${movieTitle}`;
             });
     
             moviesContainer.appendChild(movieElement);
