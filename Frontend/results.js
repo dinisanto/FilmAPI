@@ -150,19 +150,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         movies.forEach(movie => {
             const movieElement = document.createElement("div");
             movieElement.className = "movie";
-
+    
             const voteAverage = parseFloat(movie.vote_average) || 0;
             const votePercentage = movie.vote_average 
                 ? Math.round(movie.vote_average * 10) + "%" 
                 : "N/A";
-
+    
             const voteColor =
                 voteAverage <= 3.9
                     ? "#ff0000"
                     : voteAverage <= 7
                     ? "#ffcc00"
                     : "#21d07a";
-
+    
             const progressCircleHTML = `        
                 <div class="movie-image-container">
                     <img src="${movie.image !== "N/A" ? movie.image : 'https://via.placeholder.com/200'}" alt="${movie.title}" />
@@ -178,8 +178,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <h3>${movie.title}</h3>
                 <p><strong>Data de lançamento:</strong> ${movie.release_date || "N/A"}</p>
             `;
-
+    
             movieElement.innerHTML = progressCircleHTML;
+
             movieElement.setAttribute("data-genre", movie.genre || "");
             movieElement.setAttribute("data-release-date", movie.release_date || "");
             movieElement.setAttribute("data-duration", movie.duration || "");
@@ -187,9 +188,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             movieElement.setAttribute("data-title", movie.title || "");
             movieElement.setAttribute("data-rating", movie.vote_average || 0);
 
+            movieElement.addEventListener("click", () => {
+                const movieTitle = encodeURIComponent(movie.title);
+                window.location.href = `/FilmAPI/Frontend/details.html?title=${movieTitle}`;
+            });
+    
             moviesContainer.appendChild(movieElement);
         });
     };
+    
 
     await fetchMovies();
 });

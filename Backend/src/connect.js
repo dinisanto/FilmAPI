@@ -57,6 +57,7 @@ async function getTmdbTrailer(movieId) {
     }
 }
 
+// Rota para buscar filme por título
 app.get('/get_film/:title', async (req, res) => {
     const { title } = req.params;
     const { exact } = req.query;
@@ -141,6 +142,82 @@ app.get('/get_film/:title', async (req, res) => {
         return res.json({
             movies: enrichedMovies,
             message: `${enrichedMovies.length} filme(s) encontrado(s).`,
+        });
+    } catch (error) {
+        console.error("Erro ao buscar dados:", error.message);
+        return res.status(500).json({ error: "Erro ao buscar dados das APIs." });
+    }
+});
+
+// Rota para buscar filme por ID
+app.get('/get_film_by_id/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        // A URL para pegar as informações do filme usando o ID
+        const tmdbUrl = `https://api.themoviedb.org/3/movie/${id}`;
+
+        const tmdbResponse = await axios.get(tmdbUrl, {
+            params: {
+                api_key: TMDB_ACCESS_TOKEN,
+                language: "pt-BR",
+            },
+            headers: {
+                "Content-Type": "application/json;charset=utf-8",
+            },
+        });
+
+        const movie = tmdbResponse.data;
+
+        if (!movie) {
+            return res.status(404).json({ error: "Filme não encontrado na TMDb." });
+        }
+
+        const omdbUrl = `http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&t=${encodeURIComponent(movie.title)}`;
+        const omdbResponse = await axios.get(omdbUrl);
+        const omdbData = omdbResponse.data;
+
+        const release_date = formatDate(omdbData.Released) || formatDate(movie.release_date);
+        const vote_average = omdbData.imdbRating && !isNaN(omdbData.imdbRating) ? parseFloat(omdbData.imdbRating) : movie.vote_average;
+
+        const poster = movie.poster_path
+            ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+            : (omdbData.Response !== "False" && omdbData.Poster !== "N/A") ? omdbData.Poster : "Imagem não encontrada";
+
+        const background = movie.backdrop_path
+            ? `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`
+            : "Background não encontrado";
+
+        const trailerUrl = await getTmdbTrailer(id);
+
+        const enrichedMovie = {
+            title: movie.title,
+            plot: movie.overview || "Sinopse não disponível.",
+            trailer: trailerUrl,
+            image: poster,
+            background: background,
+            release_date: release_date,
+            vote_average: vote_average,
+        };
+
+        const clientIp = req.clientIp;
+        const dataToInsert = {
+            ...enrichedMovie,
+            client_ip: clientIp,
+        };
+
+        const { error } = await supabase
+            .from('filmes')
+            .insert([dataToInsert]);
+
+        if (error) {
+            console.error('Erro ao salvar no Supabase:', error.message);
+            return res.status(500).json({ error: "Erro ao salvar dados no Supabase" });
+        }
+
+        return res.json({
+            movie: enrichedMovie,
+            message: `Filme encontrado.`,
         });
     } catch (error) {
         console.error("Erro ao buscar dados:", error.message);
