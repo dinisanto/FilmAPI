@@ -3,32 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalhes do Filme</title>
+    <title>Pesquisa de Filmes</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="details.css">
+    <link rel="stylesheet" href="index.css">
 </head>
 <body>
     <!-- Navbar -->
     <nav class="navbar">
         <a class="logo" href="index.html">FilmAPI</a>
-        <div class="menu">
-            <a href="index.html">
-                <i class="fas fa-search search-icon"></i>
-            </a>
-        </div>
     </nav>
 
     <!-- Main -->
-    <section>
-        <div id="film-details"></div>
-    </section>
-
-    <!-- Modal -->
-    <div id="modal" class="modal hidden">
-        <div class="modal-content">
-            <span class="close">&times;</span>
+    <section class="hero-section">
+        <h1>Bem-vindo(a)</h1>
+        <p>Milhões de filmes e séries para descobrires. Procura já.</p>
+        <div class="search-bar">
+            <input type="text" id="movie-title" placeholder="Pesquisar por um filme ou uma série..." />
+            <button onclick="searchFilm()">Pesquisar</button>
         </div>
-    </div>
+    </section>
 
     <!-- Footer -->
     <footer>
@@ -39,6 +32,7 @@
     </footer>
 
     <!-- Script -->
-    <script src="details.js"></script>
+    <script src="index.js"></script>
+
 </body>
 </html>
