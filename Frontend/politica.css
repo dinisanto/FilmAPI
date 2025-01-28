@@ -5,7 +5,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f9f9f9;
-    color: #333;
+    color: #000000;
 }
 
 /* Navbar estilo */
@@ -13,10 +13,10 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 350px;
-    background-color: rgba(0, 0, 0, 0.7);
+    padding: 15px 30px;
+    background-color: black;  
     border-bottom: 2px solid red;
-    position: relative; 
+    position: relative;
     z-index: 2;
 }
 
@@ -26,12 +26,27 @@ body {
     color: #ffffff;
     cursor: pointer;
     text-decoration: none;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.navbar .logo:hover {
+    color: red;
 }
 
 .navbar .menu {
     display: flex;
     align-items: center;
     gap: 20px;
+}
+
+.navbar .search-icon {
+    font-size: 1.2rem;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.navbar .search-icon:hover {
+    color: red;
 }
 
 .top-rounded {
@@ -99,16 +114,13 @@ ul li {
 
 /* Footer estilo */
 footer {
-    background-color: rgba(0, 0, 0, 0.8); 
+    background-color: black;
     color: #ffffff;
     padding: 15px 20px;
     text-align: center;
     font-size: 0.9rem;
     border-top: 2px solid red;
     width: 100%;
-    position: relative;
-    bottom: 0;
-    left: 0;
 }
 
 footer a {
@@ -118,4 +130,19 @@ footer a {
 
 footer a:hover {
     text-decoration: underline;
+}
+
+
+.search-icon {
+    font-size: 1.5rem;
+    color: #ffffff;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+
+.search-icon:focus {
+    outline: none;
+    box-shadow: 0 0 5px red;
 }

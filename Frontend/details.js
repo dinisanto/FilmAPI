@@ -1,20 +1,19 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const movieTitle = urlParams.get("title"); // Corrigido para buscar o parâmetro 'title'
+    const movieId = urlParams.get("id");
 
-    if (!movieTitle) {
-        alert("Nenhum título de filme fornecido!");
+    if (!movieId) {
+        alert("Nenhum ID de filme fornecido!");
         return;
     }
 
     try {
-        // Faz a requisição ao backend usando o título do filme
-        const response = await fetch(`http://localhost:5500/get_film/${movieTitle}`);
+        const response = await fetch(`http://localhost:5500/get_film_by_id/${movieId}`);
         const movieData = await response.json();
 
-        // Verifica se a resposta é válida e contém dados do filme
-        if (response.ok && movieData.movies && movieData.movies.length > 0) {
-            const movie = movieData.movies[0]; // Obtém o primeiro filme da lista
+        if (response.ok && movieData) {
+            const movie = movieData;
+
             const filmDetails = document.getElementById("film-details");
 
             const posterImage = movie.image !== "Imagem não encontrada" && movie.image !== "N/A" 
@@ -77,11 +76,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             modal.onclick = function (event) {
                 if (event.target === modal || event.target.classList.contains('close')) {
                     modal.style.display = 'none';
-                    modalContent.innerHTML = '<span class="close">&times;</span>'; // Limpa o iframe
+                    modalContent.innerHTML = '<span class="close">&times;</span>';
                 }
             };
 
-            // Adiciona o gradiente dinâmico no background da progress-circle
             const progressCircle = document.querySelector('.progress-circle');
             if (progressCircle) {
                 progressCircle.style.background = getConicGradient(movie.vote_average);

@@ -57,7 +57,6 @@ async function getTmdbTrailer(movieId) {
     }
 }
 
-// Rota para buscar filmes por título
 app.get('/get_film/:title', async (req, res) => {
     const { title } = req.params;
     const { exact } = req.query;
@@ -92,7 +91,7 @@ app.get('/get_film/:title', async (req, res) => {
 
         const enrichedMovies = await Promise.all(
             movies.map(async (movie) => {
-                const id_filme = movie.id; // Alteração para id_filme
+                const id_filme = movie.id;
 
                 const omdbUrl = `http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&t=${encodeURIComponent(movie.title)}`;
                 const omdbResponse = await axios.get(omdbUrl);
@@ -112,7 +111,7 @@ app.get('/get_film/:title', async (req, res) => {
                 const trailerUrl = await getTmdbTrailer(id_filme);
 
                 return {
-                    id_filme, // Adicionando id_filme
+                    id_filme,
                     title: movie.title,
                     plot: movie.overview || "Sinopse não disponível.",
                     trailer: trailerUrl,
@@ -132,7 +131,7 @@ app.get('/get_film/:title', async (req, res) => {
 
         const { error } = await supabase
             .from('filmes')
-            .upsert(dataToInsert, { onConflict: 'id_filme' }); // Usando id_filme como chave única
+            .upsert(dataToInsert, { onConflict: 'id_filme' });
 
         if (error) {
             console.error('Erro ao salvar no Supabase:', error.message);
@@ -149,7 +148,6 @@ app.get('/get_film/:title', async (req, res) => {
     }
 });
 
-// Rota para buscar filmes por ID
 app.get('/get_film_by_id/:id_filme', async (req, res) => {
     const { id_filme } = req.params;
 
@@ -186,7 +184,7 @@ app.get('/get_film_by_id/:id_filme', async (req, res) => {
         const trailerUrl = await getTmdbTrailer(id_filme);
 
         const enrichedMovie = {
-            id_filme, // Adicionando id_filme
+            id_filme,
             title: movie.title,
             plot: movie.overview || "Sinopse não disponível.",
             trailer: trailerUrl,
@@ -198,8 +196,7 @@ app.get('/get_film_by_id/:id_filme', async (req, res) => {
 
         const { error } = await supabase
             .from('filmes')
-            .upsert({ ...enrichedMovie, client_ip: req.clientIp }, { onConflict: 'id_filme' }); // Usando id_filme como chave única
-
+            .upsert({ ...enrichedMovie, client_ip: req.clientIp }, { onConflict: 'id_filme' });
         if (error) {
             console.error('Erro ao salvar no Supabase:', error.message);
             return res.status(500).json({ error: "Erro ao salvar dados no Supabase" });

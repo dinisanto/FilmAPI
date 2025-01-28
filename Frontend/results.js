@@ -61,142 +61,115 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("apply-filters-btn").addEventListener("click", () => {
             updateFiltersAndSorting(movies);
         });
-
-        document.getElementById("sort-by").addEventListener("change", () => {
-            updateFiltersAndSorting(movies);
-        });
     };
 
     const updateFiltersAndSorting = (movies) => {
-        const movieElements = Array.from(document.querySelectorAll("#movies-container .movie"));
+        let sortedMovies = applyFilters(movies);
 
-        movieElements.forEach(movie => {
-            const genres = movie.getAttribute("data-genre").toLowerCase().split(", ");
-            const releaseDate = new Date(movie.getAttribute("data-release-date"));
-            const duration = parseInt(movie.getAttribute("data-duration"));
-            const ageRating = parseInt(movie.getAttribute("data-age-rating"));
+        // Pegar o valor da opção de ordenação
+        const sortBy = document.getElementById("sort-by").value;
 
-            const matchesGenre = filters.genre.length === 0 || filters.genre.some(g => genres.includes(g));
-            const matchesDate =
-                (!filters.startDate || releaseDate >= filters.startDate) &&
-                (!filters.endDate || releaseDate <= filters.endDate);
-            const matchesDuration =
-                (!filters.minDuration || duration >= filters.minDuration) &&
-                (!filters.maxDuration || duration <= filters.maxDuration);
-            const matchesAge = filters.ageRating.length === 0 || filters.ageRating.includes(ageRating);
+        switch (sortBy) {
+            case "release-asc":
+                sortedMovies = sortedMovies.sort((a, b) => new Date(a.release_date) - new Date(b.release_date));
+                break;
+            case "release-desc":
+                sortedMovies = sortedMovies.sort((a, b) => new Date(b.release_date) - new Date(a.release_date));
+                break;
+            case "rating-asc":
+                sortedMovies = sortedMovies.sort((a, b) => a.vote_average - b.vote_average);
+                break;
+            case "rating-desc":
+                sortedMovies = sortedMovies.sort((a, b) => b.vote_average - a.vote_average);
+                break;
+            case "title-asc":
+                sortedMovies = sortedMovies.sort((a, b) => a.title.localeCompare(b.title));
+                break;
+            case "title-desc":
+                sortedMovies = sortedMovies.sort((a, b) => b.title.localeCompare(a.title));
+                break;
+            default:
+                break;
+        }
 
-            movie.style.display = matchesGenre && matchesDate && matchesDuration && matchesAge ? "block" : "none";
-        });
-
-        applySorting(movieElements);
+        renderMovies(sortedMovies);
     };
 
-    document.getElementById('apply-filters-btn').addEventListener('click', function () {
-        const sortOption = document.getElementById('sort-by').value; 
+    const applyFilters = (movies) => {
+        // Adicione lógica para aplicar os filtros
+        return movies;
+    };
 
-        sortMovies(sortOption);
-    });
+    const formatDate = (releaseDate) => {
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
+        const date = new Date(releaseDate);
+        
+        // Obter o dia, mês e ano
+        const day = date.toLocaleDateString('pt-BR', { day: 'numeric' });
+        const month = date.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '');
+        const year = date.toLocaleDateString('pt-BR', { year: 'numeric' });
 
-    function sortMovies(option) {
-        const moviesContainer = document.getElementById('movies-container');
-        const movies = Array.from(moviesContainer.getElementsByClassName('movie'));
-
-        let sortedMovies;
-
-        switch (option) {
-            case 'release-asc':
-                sortedMovies = movies.sort((a, b) => {
-                    return new Date(a.dataset.releaseDate) - new Date(b.dataset.releaseDate); // ordena por data de lançamento ascendente
-                });
-            break;
-            case 'release-desc':
-                sortedMovies = movies.sort((a, b) => {
-                    return new Date(b.dataset.releaseDate) - new Date(a.dataset.releaseDate); // ordena por data de lançamento descendente
-                });
-            break;
-            case 'rating-asc':
-                sortedMovies = movies.sort((a, b) => {
-                    return parseFloat(a.dataset.rating) - parseFloat(b.dataset.rating); // ordena por classificação ascendente
-                });
-            break;
-            case 'rating-desc':
-                sortedMovies = movies.sort((a, b) => {
-                    return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating); // ordena por classificação descendente
-                });
-            break;
-            case 'title-asc':
-                sortedMovies = movies.sort((a, b) => {
-                    return a.querySelector('h3').innerText.localeCompare(b.querySelector('h3').innerText); // ordena por título A-Z
-                });
-            break;
-            case 'title-desc':
-                sortedMovies = movies.sort((a, b) => {
-                    return b.querySelector('h3').innerText.localeCompare(a.querySelector('h3').innerText); // ordena por título Z-A
-                });
-            break;
-            default:
-                sortedMovies = movies;
-            }
-
-        moviesContainer.innerHTML = '';
-
-        sortedMovies.forEach(movie => {
-            moviesContainer.appendChild(movie);
-        });
-    }
+        return `${day} de ${month} de ${year}`;
+    };
 
     const updateProgressCircles = (movies) => {
         const moviesContainer = document.getElementById("movies-container");
         movies.forEach(movie => {
             const movieElement = document.createElement("div");
             movieElement.className = "movie";
-    
+
             const voteAverage = parseFloat(movie.vote_average) || 0;
             const votePercentage = movie.vote_average 
                 ? Math.round(movie.vote_average * 10) + "%" 
                 : "N/A";
-    
-            const voteColor =
-                voteAverage <= 3.9
-                    ? "#ff0000"
-                    : voteAverage <= 7
-                    ? "#ffcc00"
-                    : "#21d07a";
-    
+
+            // Usando a função getConicGradient para definir o gradiente
+            const progressCircleGradient = getConicGradient(voteAverage);
+
+            // Formatar a data de lançamento
+            const formattedReleaseDate = formatDate(movie.release_date);
+
             const progressCircleHTML = `        
-                <div class="movie-image-container">
-                    <img src="${movie.image !== "N/A" ? movie.image : 'https://via.placeholder.com/200'}" alt="${movie.title}" />
-                    <div class="progress-circle" style="background: conic-gradient(
-                        ${voteColor} 0% ${voteAverage * 10}%,
-                      #204529 ${voteAverage * 10}% 100%
-                    );">
-                        <div class="circle">
-                            <span class="progress-text">${votePercentage}</span>
-                        </div>
+            <div class="movie-image-container">
+                <img src="${movie.image !== "N/A" ? movie.image : 'https://via.placeholder.com/180x273'}" alt="${movie.title}" />
+                <div class="progress-circle" style="background: ${progressCircleGradient};">
+                    <div class="circle">
+                        <span class="progress-text">${votePercentage}</span>
                     </div>
                 </div>
-                <h3>${movie.title}</h3>
-                <p><strong>Data de lançamento:</strong> ${movie.release_date || "N/A"}</p>
+            </div>
+            <div class="movie-details">
+                <h4>${movie.title}</h4>
+                <p>${formattedReleaseDate}</p>
+            </div>
             `;
-    
+
             movieElement.innerHTML = progressCircleHTML;
-
-            movieElement.setAttribute("data-genre", movie.genre || "");
-            movieElement.setAttribute("data-release-date", movie.release_date || "");
-            movieElement.setAttribute("data-duration", movie.duration || "");
-            movieElement.setAttribute("data-age-rating", movie.age_rating || "");
-            movieElement.setAttribute("data-title", movie.title || "");
-            movieElement.setAttribute("data-rating", movie.vote_average || 0);
-
+      
+            movieElement.setAttribute("data-id-filme", movie.id_filme);
+        
             movieElement.addEventListener("click", () => {
-                const movieTitle = encodeURIComponent(movie.title);
-                window.location.href = `/FilmAPI/Frontend/details.html?title=${movieTitle}`;
+                const movieId = movieElement.getAttribute("data-id-filme");
+                window.location.href = `/Frontend/details.html?id=${movieId}`;
             });
-    
+        
             moviesContainer.appendChild(movieElement);
         });
     };
-    
+
+    // Função para definir o gradiente dinâmico com base na nota
+    function getConicGradient(voteAverage) {
+        if (!voteAverage) return 'conic-gradient(#666666 0% 0%, #666666 0% 100%)'; // Cor padrão para "N/A"
+        const percentage = voteAverage * 10; // Converte para porcentagem (0-100)
+
+        if (percentage <= 39) {
+            return `conic-gradient(#db2360 0% ${percentage}%, #571435 ${percentage}% 100%)`; // Vermelho
+        } else if (percentage <= 69) {
+            return `conic-gradient(#d2d531 0% ${percentage}%, #423d0f ${percentage}% 100%)`; // Amarelo
+        } else {
+            return `conic-gradient(#21d07a 0% ${percentage}%, #204529 ${percentage}% 100%)`; // Verde
+        }
+    }
 
     await fetchMovies();
 });
