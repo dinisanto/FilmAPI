@@ -146,7 +146,7 @@ footer a:hover {
     font-size: 1rem;
     line-height: 1.2rem;
     font-weight: bold;
-    margin: 0;
+    margin: 15px;
     min-height: 3rem;
     display: flex;
     justify-content: center;
@@ -155,7 +155,7 @@ footer a:hover {
 }
 
 .movie p {
-    margin: 10px;
+    margin: 0;
 }
 
 .movie-image-container {

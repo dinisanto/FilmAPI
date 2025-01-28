@@ -1,18 +1,20 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const movieId = urlParams.get("id");
+    const movieTitle = urlParams.get("title"); // Corrigido para buscar o parâmetro 'title'
 
-    if (!movieId) {
-        alert("Nenhum ID de filme fornecido!");
+    if (!movieTitle) {
+        alert("Nenhum título de filme fornecido!");
         return;
     }
 
     try {
-        const response = await fetch(`http://localhost:5500/get_film/${movieId}`);
+        // Faz a requisição ao backend usando o título do filme
+        const response = await fetch(`http://localhost:5500/get_film/${movieTitle}`);
         const movieData = await response.json();
 
+        // Verifica se a resposta é válida e contém dados do filme
         if (response.ok && movieData.movies && movieData.movies.length > 0) {
-            const movie = movieData.movies[0];
+            const movie = movieData.movies[0]; // Obtém o primeiro filme da lista
             const filmDetails = document.getElementById("film-details");
 
             const posterImage = movie.image !== "Imagem não encontrada" && movie.image !== "N/A" 
@@ -57,7 +59,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             const trailerButton = document.querySelector('.trailer-button');
             const modal = document.getElementById('modal');
             const modalContent = modal.querySelector('.modal-content');
-            const closeModal = modal.querySelector('.close');
 
             // Evento para abrir o modal e carregar o iframe
             trailerButton.onclick = function () {

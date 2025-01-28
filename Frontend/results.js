@@ -157,9 +157,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 : "N/A";
 
             const voteColor =
-                voteAverage <= 3
+                voteAverage <= 3.9
                     ? "#ff0000"
-                    : voteAverage <= 6
+                    : voteAverage <= 7
                     ? "#ffcc00"
                     : "#21d07a";
 
@@ -176,7 +176,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     </div>
                 </div>
                 <h3>${movie.title}</h3>
-                <p><strong>Nota:</strong> ${votePercentage}</p>
                 <p><strong>Data de lançamento:</strong> ${movie.release_date || "N/A"}</p>
             `;
 
