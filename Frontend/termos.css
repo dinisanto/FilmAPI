@@ -1,11 +1,25 @@
-/* styles.css */
-body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
+/* Reset básico */
+* {
     margin: 0;
     padding: 0;
-    background-color: #f9f9f9;
-    color: #333;
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: Arial, sans-serif; 
+    background-color: white;
+    background-size: cover;
+    color: black;
+    line-height: 1.6;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Navbar estilo */
@@ -14,7 +28,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 15px 30px;
-    background-color: #000000;
+    background-color: black;  
     border-bottom: 2px solid red;
     position: relative;
     z-index: 2;
@@ -38,14 +52,15 @@ body {
     align-items: center;
     gap: 20px;
 }
-.top-rounded {
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+
+.navbar .search-icon {
+    font-size: 1.2rem;
+    color: #ffffff;
+    cursor: pointer;
 }
 
-.bottom-rounded {
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
+.navbar .search-icon:hover {
+    color: red;
 }
 
 .navbar .search-icon {
@@ -58,33 +73,13 @@ body {
     color: red;
 }
 
-/* Header */
-header {
-    background-color: #333;
-    color: #fff;
-    padding: 20px;
-    text-align: center;
-}
-
-header h1 {
-    margin: 0;
-    font-size: 2.5em;
-}
-
-
 /* Main content */
 main {
-    padding: 20px;
-}
-
-section {
-    margin-bottom: 20px;
+    padding: 30px;
 }
 
 section h2 {
-    color: #444;
-    border-bottom: 2px solid #ccc;
-    padding-bottom: 5px;
+    color: black;
     margin-bottom: 10px;
 }
 
@@ -93,24 +88,18 @@ section p, section ul {
 }
 
 ul {
-    padding-left: 20px;
-    list-style-type: disc;
-}
-
-ul li {
-    margin-bottom: 5px;
+    padding-left: 30px;
 }
 
 /* Footer estilo */
 footer {
-    background-color: #000000;
+    background-color: black;
     color: #ffffff;
     padding: 15px 20px;
     text-align: center;
     font-size: 0.9rem;
     border-top: 2px solid red;
     width: 100%;
-    position: relative;
 }
 
 footer a {
@@ -121,6 +110,7 @@ footer a {
 footer a:hover {
     text-decoration: underline;
 }
+
 
 .search-icon {
     font-size: 1.5rem;

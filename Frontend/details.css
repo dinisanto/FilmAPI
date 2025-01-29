@@ -52,17 +52,7 @@ section {
     display: flex;
     align-items: center;
     gap: 20px;
-}
-
-.top-rounded {
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-}
-
-.bottom-rounded {
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-}
+} 
 
 .navbar .search-icon {
     font-size: 1.2rem;
