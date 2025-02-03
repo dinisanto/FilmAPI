@@ -15,6 +15,8 @@ The Movie Database (TMDb) API
 
 Docker
 
+Supabase
+
 Instalação
 
 Clone este repositório:
